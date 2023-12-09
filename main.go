@@ -12,20 +12,6 @@ import (
 
 var client *http.Client
 
-func GetCodeforcesBefore(result []CodeforcesContest) []CodeforcesContest {
-	var filtered []CodeforcesContest
-	for _, contest := range result {
-		if contest.Phase == "BEFORE" {
-			filtered = append(filtered, contest)
-			contest.Print()
-			fmt.Print("\n")
-		} else {
-			break
-		}
-	}
-	return filtered
-}
-
 func GetCodeforces() CodeforcesResponse {
 	url := "https://codeforces.com/api/contest.list?gym=false"
 	var codeforces CodeforcesResponse
@@ -57,11 +43,9 @@ func main() {
 
 	h1 := func(w http.ResponseWriter, r *http.Request) {
 		codeforcesResponse := GetCodeforces()
-		c := GetCodeforcesBefore(codeforcesResponse.Result)
+		c := filter(codeforcesResponse.Result, Filter{func(c CodeforcesContest) bool { return c.Phase == "BEFORE" }})
 		sort.Sort(ByDate(c))
 		tmpl, _ := template.New("index.html").Funcs(funcMap).ParseFiles("index.html")
-		//tmpl := template.Must(template.ParseFiles("index.html"))
-		//fmt.Println(len(contests))
 		contests := map[string][]CodeforcesContest{
 			"Test": c,
 		}

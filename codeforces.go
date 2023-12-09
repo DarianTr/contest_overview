@@ -53,3 +53,17 @@ func (c CodeforcesContest) Print() {
 	fmt.Printf("StartTimeSecond: %v\n", c.StartTimeSeconds)
 	fmt.Printf("RelativeTimeSecond: %v\n", c.RelativeTimeSeconds)
 }
+
+type Filter struct {
+	condition func(CodeforcesContest) bool
+}
+
+func filter(contests []CodeforcesContest, filter Filter) []CodeforcesContest {
+	var filtered []CodeforcesContest
+	for _, c := range contests {
+		if filter.condition(c) {
+			filtered = append(filtered, c)
+		}
+	}
+	return filtered
+}
