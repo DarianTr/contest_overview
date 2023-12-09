@@ -6,44 +6,9 @@ import (
 	"html/template"
 	"log"
 	"net/http"
+	"sort"
 	"time"
 )
-
-type CodeforcesResponse struct {
-	Status string              `json:"status"`
-	Result []CodeforcesContest `json:"result"`
-}
-
-type CodeforcesContest struct {
-	Id                  int    `json:"id"`
-	Name                string `json:"name"`
-	Type                string `json:"type"`
-	Phase               string `json:"phase"`
-	Frozen              bool   `json:"fronzen"`
-	DurationSeconds     int    `json:"durationSeconds"`
-	StartTimeSeconds    int    `json:"startTimeSeconds"`
-	RelativeTimeSeconds int    `json:"relativeTimeSeconds"`
-	// PreparedBy         string `json:"preparedBy"`
-	// WebsiteUrl         string `json:"websiteUrl"`
-	// Description        string `json:"description"`
-	// Difficulty         int    `json:"difficulty"`
-	// Kind               string `json:"kind"`
-	// IcpcRegion         string `json:"icpcRegion"`
-	// Country            string `json:"country"`
-	// City               string `json:"city"`
-	// Season             string `json:"season"`
-}
-
-func (c CodeforcesContest) Print() {
-	fmt.Printf("Id: %v\n", c.Id)
-	fmt.Printf("Name: %v\n", c.Name)
-	fmt.Printf("Type: %v\n", c.Type)
-	fmt.Printf("Phase: %v\n", c.Phase)
-	fmt.Printf("Frozen: %v\n", c.Frozen)
-	fmt.Printf("DurationSecond: %v\n", c.DurationSeconds)
-	fmt.Printf("StartTimeSecond: %v\n", c.StartTimeSeconds)
-	fmt.Printf("RelativeTimeSecond: %v\n", c.RelativeTimeSeconds)
-}
 
 var client *http.Client
 
@@ -93,6 +58,7 @@ func main() {
 	h1 := func(w http.ResponseWriter, r *http.Request) {
 		codeforcesResponse := GetCodeforces()
 		c := GetCodeforcesBefore(codeforcesResponse.Result)
+		sort.Sort(ByDate(c))
 		tmpl, _ := template.New("index.html").Funcs(funcMap).ParseFiles("index.html")
 		//tmpl := template.Must(template.ParseFiles("index.html"))
 		//fmt.Println(len(contests))
