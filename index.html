@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="refresh" content="10">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Codeforces Contests</h1>
+
+    {{ range .Test }}
+        <p>
+            <a href="https://codeforces.com/contests/{{ .Id }}"> {{ .Name }} </a> - starting in {{ Div .RelativeTimeSeconds -86400}} days
+        </p>
+    {{ end }}
+
+</body>
+</html>
