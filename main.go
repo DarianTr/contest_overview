@@ -32,6 +32,10 @@ func GetJson(url string, target interface{}) error {
 	return json.NewDecoder(resp.Body).Decode(target)
 }
 
+type Data struct {
+	Data []Contest
+}
+
 func main() {
 	client = &http.Client{Timeout: 10 * time.Second}
 
@@ -39,17 +43,31 @@ func main() {
 		"Div": func(a int, b int) int {
 			return a / b
 		},
+		"getName": func(c Contest) string {
+			return c.get_name()
+		},
+		"getDate": func(c Contest) string {
+			return c.get_date()
+		},
+		"getUrl": func(c Contest) string {
+			return c.get_url()
+		},
 	}
 
 	h1 := func(w http.ResponseWriter, r *http.Request) {
 		codeforcesResponse := GetCodeforces()
 		c := filter(codeforcesResponse.Result, Filter{func(c CodeforcesContest) bool { return c.Phase == "BEFORE" }})
-		sort.Sort(ByDate(c))
-		tmpl, _ := template.New("index.html").Funcs(funcMap).ParseFiles("index.html")
-		contests := map[string][]CodeforcesContest{
-			"Test": c,
+		var cSlice []Contest
+		for _, contest := range c {
+			cSlice = append(cSlice, contest)
 		}
-		tmpl.Execute(w, contests)
+		println(len(cSlice))
+		sort.Sort(ByDate(cSlice))
+		for _, s := range cSlice {
+			println(s.get_name())
+		}
+		tmpl, _ := template.New("index.html").Funcs(funcMap).ParseFiles("index.html")
+		tmpl.Execute(w, cSlice)
 	}
 	http.HandleFunc("/", h1)
 

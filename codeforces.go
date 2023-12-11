@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"time"
 )
 
 type CodeforcesResponse struct {
@@ -18,29 +19,6 @@ type CodeforcesContest struct {
 	DurationSeconds     int    `json:"durationSeconds"`
 	StartTimeSeconds    int    `json:"startTimeSeconds"`
 	RelativeTimeSeconds int    `json:"relativeTimeSeconds"`
-	// PreparedBy         string `json:"preparedBy"`
-	// WebsiteUrl         string `json:"websiteUrl"`
-	// Description        string `json:"description"`
-	// Difficulty         int    `json:"difficulty"`
-	// Kind               string `json:"kind"`
-	// IcpcRegion         string `json:"icpcRegion"`
-	// Country            string `json:"country"`
-	// City               string `json:"city"`
-	// Season             string `json:"season"`
-}
-
-type ByDate []CodeforcesContest
-
-func (a ByDate) Len() int {
-	return len(a)
-}
-
-func (a ByDate) Less(i, j int) bool {
-	return -1*a[i].RelativeTimeSeconds < -1*a[j].RelativeTimeSeconds
-}
-
-func (a ByDate) Swap(i, j int) {
-	a[i], a[j] = a[j], a[i]
 }
 
 func (c CodeforcesContest) Print() {
@@ -52,6 +30,24 @@ func (c CodeforcesContest) Print() {
 	fmt.Printf("DurationSecond: %v\n", c.DurationSeconds)
 	fmt.Printf("StartTimeSecond: %v\n", c.StartTimeSeconds)
 	fmt.Printf("RelativeTimeSecond: %v\n", c.RelativeTimeSeconds)
+}
+
+func (cc CodeforcesContest) get_name() string {
+	return cc.Name
+}
+
+func (cc CodeforcesContest) get_date() string {
+	date := time.Now().Add(time.Duration(-1*cc.RelativeTimeSeconds) * time.Second)
+	zone, _ := date.Zone()
+	return fmt.Sprintf("%v %v, %v %v:%v %v", date.Month(), date.Day(), date.Year(), date.Hour(), date.Minute(), zone)
+}
+
+func (cc CodeforcesContest) get_url() string {
+	return fmt.Sprintf("https://codeforces.com/contests/%v", cc.Id)
+}
+
+func (cc CodeforcesContest) get_seconds() int {
+	return cc.RelativeTimeSeconds
 }
 
 type Filter struct {

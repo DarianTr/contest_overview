@@ -13,12 +13,12 @@
             <h1 class="mb-4">Codeforces Contests</h1>
 
             <ul class="list-group fs-5 me-5">
-                {{ range .Test }}
+                {{ range . }}
                     <li class="list-group-item bg-primary text-white">
-                        <a href="https://codeforces.com/contests/{{ .Id }}" class="link-light link-offset-2 link-underline-opacity-25 link-underline-opacity-75-hover">
-                            {{ .Name }} 
+                        <a href="{{getUrl . }}" class="link-light link-offset-2 link-underline-opacity-25 link-underline-opacity-75-hover">
+                            {{ getName . }} 
                         </a> 
-                        - starting in {{ Div .RelativeTimeSeconds -86400}} days
+                        - starting at {{ getDate .}}
                     </li>
                 {{ end }}
 
