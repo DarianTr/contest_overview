@@ -54,6 +54,10 @@ func (cc CodeforcesContest) is_active() bool {
 	return cc.Phase == "BEFORE"
 }
 
+func (cc CodeforcesContest) get_judge_name() string {
+	return "Codeforces"
+}
+
 func to_contests(cc []CodeforcesContest) []Contest {
 	var res []Contest
 	for _, c := range cc {

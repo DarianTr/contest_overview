@@ -14,6 +14,7 @@ type Contest interface {
 	get_url() string
 	get_seconds() int
 	is_active() bool
+	get_judge_name() string
 }
 
 type ByDate []Contest
@@ -27,6 +28,20 @@ func (a ByDate) Less(i, j int) bool {
 }
 
 func (a ByDate) Swap(i, j int) {
+	a[i], a[j] = a[j], a[i]
+}
+
+type ByJudge []Contest
+
+func (a ByJudge) Len() int {
+	return len(a)
+}
+
+func (a ByJudge) Less(i, j int) bool {
+	return a[i].get_judge_name() < a[j].get_judge_name()
+}
+
+func (a ByJudge) Swap(i, j int) {
 	a[i], a[j] = a[j], a[i]
 }
 
