@@ -38,7 +38,7 @@ type Data struct {
 
 func main() {
 	client = &http.Client{Timeout: 10 * time.Second}
-
+	var _ Contest = new(CodeforcesContest)
 	funcMap := template.FuncMap{
 		"Div": func(a int, b int) int {
 			return a / b
@@ -56,18 +56,14 @@ func main() {
 
 	h1 := func(w http.ResponseWriter, r *http.Request) {
 		codeforcesResponse := GetCodeforces()
-		c := filter(codeforcesResponse.Result, Filter{func(c CodeforcesContest) bool { return c.Phase == "BEFORE" }})
-		var cSlice []Contest
-		for _, contest := range c {
-			cSlice = append(cSlice, contest)
-		}
-		println(len(cSlice))
-		sort.Sort(ByDate(cSlice))
-		for _, s := range cSlice {
+		c := filter(to_contests(codeforcesResponse.Result), Filter{func(c Contest) bool { return c.is_active() }})
+		println(len(c))
+		sort.Sort(ByDate(c))
+		for _, s := range c {
 			println(s.get_name())
 		}
 		tmpl, _ := template.New("index.html").Funcs(funcMap).ParseFiles("index.html")
-		tmpl.Execute(w, cSlice)
+		tmpl.Execute(w, c)
 	}
 	http.HandleFunc("/", h1)
 

@@ -50,16 +50,14 @@ func (cc CodeforcesContest) get_seconds() int {
 	return cc.RelativeTimeSeconds
 }
 
-type Filter struct {
-	condition func(CodeforcesContest) bool
+func (cc CodeforcesContest) is_active() bool {
+	return cc.Phase == "BEFORE"
 }
 
-func filter(contests []CodeforcesContest, filter Filter) []CodeforcesContest {
-	var filtered []CodeforcesContest
-	for _, c := range contests {
-		if filter.condition(c) {
-			filtered = append(filtered, c)
-		}
+func to_contests(cc []CodeforcesContest) []Contest {
+	var res []Contest
+	for _, c := range cc {
+		res = append(res, c)
 	}
-	return filtered
+	return res
 }
