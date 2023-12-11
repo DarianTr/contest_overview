@@ -1,6 +1,9 @@
 package main
 
-import "time"
+import (
+	"fmt"
+	"time"
+)
 
 type DmojResponse struct {
 	ApiVersion string   `json:"api_version"`
@@ -30,58 +33,38 @@ type DmojContest struct {
 	Tags      []string  `json:"tags"`
 }
 
-// type CodeforcesContest struct {
-// 	Id                  int    `json:"id"`
-// 	Name                string `json:"name"`
-// 	Type                string `json:"type"`
-// 	Phase               string `json:"phase"`
-// 	Frozen              bool   `json:"fronzen"`
-// 	DurationSeconds     int    `json:"durationSeconds"`
-// 	StartTimeSeconds    int    `json:"startTimeSeconds"`
-// 	RelativeTimeSeconds int    `json:"relativeTimeSeconds"`
-// }
+var _ Contest = DmojContest{}
 
-// func (c CodeforcesContest) Print() {
-// 	fmt.Printf("Id: %v\n", c.Id)
-// 	fmt.Printf("Name: %v\n", c.Name)
-// 	fmt.Printf("Type: %v\n", c.Type)
-// 	fmt.Printf("Phase: %v\n", c.Phase)
-// 	fmt.Printf("Frozen: %v\n", c.Frozen)
-// 	fmt.Printf("DurationSecond: %v\n", c.DurationSeconds)
-// 	fmt.Printf("StartTimeSecond: %v\n", c.StartTimeSeconds)
-// 	fmt.Printf("RelativeTimeSecond: %v\n", c.RelativeTimeSeconds)
-// }
+func (dc DmojContest) get_name() string {
+	return dc.Name
+}
 
-// func (cc CodeforcesContest) get_name() string {
-// 	return cc.Name
-// }
+func (dc DmojContest) get_date() string {
+	date := dc.StartTime
+	zone, _ := date.Zone()
+	return fmt.Sprintf("%v %v, %v %v:%v %v", date.Month(), date.Day(), date.Year(), date.Hour(), date.Minute(), zone)
+}
 
-// func (cc CodeforcesContest) get_date() string {
-// 	date := time.Now().Add(time.Duration(-1*cc.RelativeTimeSeconds) * time.Second)
-// 	zone, _ := date.Zone()
-// 	return fmt.Sprintf("%v %v, %v %v:%v %v", date.Month(), date.Day(), date.Year(), date.Hour(), date.Minute(), zone)
-// }
+func (dc DmojContest) get_url() string {
+	return fmt.Sprintf("https://dmoj.ca/contest/%v", dc.Key)
+}
 
-// func (cc CodeforcesContest) get_url() string {
-// 	return fmt.Sprintf("https://codeforces.com/contests/%v", cc.Id)
-// }
+func (dc DmojContest) get_seconds() int {
+	return int(time.Until(dc.StartTime).Seconds())
+}
 
-// func (cc CodeforcesContest) get_seconds() int {
-// 	return cc.RelativeTimeSeconds
-// }
+func (dc DmojContest) is_active() bool {
+	return dc.EndTime.After(time.Now())
+}
 
-// func (cc CodeforcesContest) is_active() bool {
-// 	return cc.Phase == "BEFORE"
-// }
+func (dc DmojContest) get_judge_name() string {
+	return "Dmoj"
+}
 
-// func (cc CodeforcesContest) get_judge_name() string {
-// 	return "Codeforces"
-// }
-
-// func to_contests(cc []CodeforcesContest) []Contest {
-// 	var res []Contest
-// 	for _, c := range cc {
-// 		res = append(res, c)
-// 	}
-// 	return res
-// }
+func dmoj_to_contests(dc []DmojContest) []Contest {
+	var res []Contest
+	for _, c := range dc {
+		res = append(res, c)
+	}
+	return res
+}

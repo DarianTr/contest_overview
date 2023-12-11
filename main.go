@@ -15,7 +15,7 @@ import (
 var client *http.Client
 var domjAPIToken string
 
-func GetDmoj() {
+func GetDmoj() DmojResponse {
 	var dmoj DmojResponse
 	url := "https://dmoj.ca/api/v2/contests"
 	req, _ := http.NewRequest("GET", url, nil)
@@ -28,6 +28,7 @@ func GetDmoj() {
 		json.NewDecoder(res.Body).Decode(&dmoj)
 		fmt.Println("res: ", dmoj.ApiVersion)
 	}
+	return dmoj
 }
 
 func GetCodeforces() CodeforcesResponse {
@@ -61,10 +62,11 @@ type Data struct {
 }
 
 func main() {
+	var _ Contest = DmojContest{}
+	var _ Contest = CodeforcesContest{}
 	SetDomjAPIToken()
 	client = &http.Client{Timeout: 10 * time.Second}
-	GetDmoj()
-	var _ Contest = new(CodeforcesContest)
+
 	funcMap := template.FuncMap{
 		"Div": func(a int, b int) int {
 			return a / b
@@ -79,22 +81,22 @@ func main() {
 			return c.get_url()
 		},
 	}
-
 	h1 := func(w http.ResponseWriter, r *http.Request) {
-		codeforcesResponse := GetCodeforces()
-		c := filter(to_contests(codeforcesResponse.Result), Filter{func(c Contest) bool { return c.is_active() }})
+		var contests []Contest
+		contests = append(contests, filter(to_contests(GetCodeforces().Result), Filter{func(c Contest) bool { return c.is_active() }})...)
+		contests = append(contests, filter(dmoj_to_contests(GetDmoj().Data.Objects), Filter{func(c Contest) bool { return c.is_active() }})...)
 		if r.Method == "POST" {
 			r.ParseForm()
 			ans := r.Form["sorted_by"]
 			if ans[0] == "by_date" {
-				sort.Sort(ByDate(c))
+				sort.Sort(ByDate(contests))
 			} else if ans[0] == "by_judge" {
-				sort.Sort(ByJudge(c))
+				sort.Sort(ByJudge(contests))
 			}
 			fmt.Println(ans[0])
 		}
 		tmpl, _ := template.New("index.html").Funcs(funcMap).ParseFiles("index.html")
-		tmpl.Execute(w, c)
+		tmpl.Execute(w, contests)
 	}
 	http.HandleFunc("/", h1)
 
