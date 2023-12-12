@@ -24,7 +24,7 @@ func (a ByDate) Len() int {
 }
 
 func (a ByDate) Less(i, j int) bool {
-	return abs(a[i].GetSeconds()) < abs(a[j].GetSeconds())
+	return -1*a[i].GetSeconds() > -1*abs(a[j].GetSeconds())
 }
 
 func (a ByDate) Swap(i, j int) {

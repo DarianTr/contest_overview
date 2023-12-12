@@ -42,7 +42,13 @@ func (dc DmojContest) GetName() string {
 func (dc DmojContest) GetDate() string {
 	date := dc.StartTime
 	zone, _ := date.Zone()
-	return fmt.Sprintf("%v %v, %v %v:%v %v", date.Month(), date.Day(), date.Year(), date.Hour(), date.Minute(), zone)
+	var minute string
+	if date.Minute() < 10 {
+		minute = fmt.Sprintf("0%v", date.Minute())
+	} else {
+		minute = fmt.Sprintf("%v", date.Minute())
+	}
+	return fmt.Sprintf("%v %v, %v %v:%v %v", date.Month(), date.Day(), date.Year(), date.Hour(), minute, zone)
 }
 
 func (dc DmojContest) GetUrl() string {

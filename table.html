@@ -1,0 +1,11 @@
+<ul class="list-group fs-5 me-5" id="contest_table">
+    {{ range . }}
+        <li class="list-group-item bg-primary text-white">
+            <a href="{{getUrl . }}" class="link-light link-offset-2 link-underline-opacity-25 link-underline-opacity-75-hover">
+                {{ getName . }} 
+            </a> 
+            - starting at {{ getDate .}}
+        </li>
+    {{ end }}
+
+</ul>

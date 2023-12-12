@@ -13,7 +13,7 @@
         <div class="col-8">
             <h1 class="mb-4">Codeforces Contests</h1>
 
-            <ul class="list-group fs-5 me-5">
+            <ul class="list-group fs-5 me-5" id="contest_table">
                 {{ range . }}
                     <li class="list-group-item bg-primary text-white">
                         <a href="{{getUrl . }}" class="link-light link-offset-2 link-underline-opacity-25 link-underline-opacity-75-hover">
@@ -27,7 +27,11 @@
         </div>
         <div class = "col-4">
             <h1 class="mb-4">Misc</h1>
-            <form method="post">
+            <form 
+            hx-get="/options"
+            hx-trigger="submit"
+            hx-target="#contest_table"
+            >
                 <legend>Options</legend>
                 <select class="form-select" aria-label="Default select example" name="sorted_by">
                     <option value="none" selected disabled hidden>Select an Option</option> 
@@ -35,20 +39,13 @@
                     <option value="by_judge">By Judging Website</option>
                 </select>
                 <legend>Exclude Judges</legend>
-                <input type="checkbox" name="Codeforces"/> <label for="Codeforces">Codeforces</label>
-                <input type="checkbox" name="Dmoj"/> <label for="Dmoj">Dmoj</label>
+                <input type="checkbox" name="Codeforces"
+                /> <label for="Codeforces">Codeforces</label>
+                <input type="checkbox" name="Dmoj"
+                /> <label for="Dmoj">Dmoj</label>
                 <br></br>
                 <input class="btn btn-primary" type="Submit" value="Send"/>
             </form>
-
-                <p>HTMX TEST</p>
-                <input type="search" name="key" placeholder="Search..."
-                    hx-get="/search"
-                    hx-trigger="keyup changed delay:500ms"
-                    hx-target="#search-results"/>
-                <div id="search-results">
-                    <p>content</p>
-                </div>
         </div>
     </div>
 </body>

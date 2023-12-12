@@ -3,11 +3,8 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"html/template"
 	"log"
 	"net/http"
-	"reflect"
-	"sort"
 	"time"
 
 	"github.com/joho/godotenv"
@@ -68,61 +65,9 @@ func main() {
 	SetDomjAPIToken()
 	client = &http.Client{Timeout: 10 * time.Second}
 
-	funcMap := template.FuncMap{
-		"Div": func(a int, b int) int {
-			return a / b
-		},
-		"getName": func(c Contest) string {
-			return c.GetName()
-		},
-		"getDate": func(c Contest) string {
-			return c.GetDate()
-		},
-		"getUrl": func(c Contest) string {
-			return c.GetUrl()
-		},
-	}
-	h1 := func(w http.ResponseWriter, r *http.Request) {
-		var contests []Contest
-		contests = append(contests, filter(ToContests(GetCodeforces().Result), FilterIsUpcoming, nil)...)
-		contests = append(contests, filter(DmojToContests(GetDmoj().Data.Objects), FilterIsUpcoming, nil)...)
-		if r.Method == "POST" {
-			r.ParseForm()
-			s := r.Form["sorted_by"]
-			if len(s) > 0 {
-				if s[0] == "by_date" {
-					sort.Sort(ByDate(contests))
-				} else if s[0] == "by_judge" {
-					sort.Sort(ByJudge(contests))
-				}
-				fmt.Println(s[0])
-			}
-			fmt.Println(reflect.TypeOf(r.Form["Codeforces"]))
-			var judges []string
-			codeforces := r.Form["Codeforces"]
-			dmoj := r.Form["Dmoj"]
-			if len(codeforces) > 0 && codeforces[0] == "on" {
-				judges = append(judges, "Codeforces")
-				fmt.Println("dmoj", judges)
-			}
-			if len(dmoj) > 0 && dmoj[0] == "on" {
-				judges = append(judges, "Dmoj")
-				fmt.Println("dmoj", judges)
-			}
-			contests = filter(contests, FilterForJudge, judges)
-
-		}
-		tmpl, _ := template.New("index.html").Funcs(funcMap).ParseFiles("index.html")
-		tmpl.Execute(w, contests)
-	}
-
-	h2 := func(w http.ResponseWriter, r *http.Request) {
-		tmpl := template.Must(template.ParseFiles("results.html"))
-		tmpl.Execute(w, nil)
-	}
-
 	http.HandleFunc("/", h1)
 	http.HandleFunc("/search", h2)
+	http.HandleFunc("/options", h3)
 
 	log.Fatal(http.ListenAndServe(":8000", nil))
 }
