@@ -115,7 +115,14 @@ func main() {
 		tmpl, _ := template.New("index.html").Funcs(funcMap).ParseFiles("index.html")
 		tmpl.Execute(w, contests)
 	}
+
+	h2 := func(w http.ResponseWriter, r *http.Request) {
+		tmpl := template.Must(template.ParseFiles("results.html"))
+		tmpl.Execute(w, nil)
+	}
+
 	http.HandleFunc("/", h1)
+	http.HandleFunc("/search", h2)
 
 	log.Fatal(http.ListenAndServe(":8000", nil))
 }
