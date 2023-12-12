@@ -101,11 +101,13 @@ func main() {
 			var judges []string
 			codeforces := r.Form["Codeforces"]
 			dmoj := r.Form["Dmoj"]
-			if len(codeforces) > 0 && codeforces[0] == "off" {
+			if len(codeforces) > 0 && codeforces[0] == "on" {
 				judges = append(judges, "Codeforces")
+				fmt.Println("dmoj", judges)
 			}
-			if len(dmoj) > 0 && dmoj[0] == "off" {
+			if len(dmoj) > 0 && dmoj[0] == "on" {
 				judges = append(judges, "Dmoj")
+				fmt.Println("dmoj", judges)
 			}
 			contests = filter(contests, FilterForJudge, judges)
 
