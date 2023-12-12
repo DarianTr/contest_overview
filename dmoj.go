@@ -35,33 +35,33 @@ type DmojContest struct {
 
 var _ Contest = DmojContest{}
 
-func (dc DmojContest) get_name() string {
+func (dc DmojContest) GetName() string {
 	return dc.Name
 }
 
-func (dc DmojContest) get_date() string {
+func (dc DmojContest) GetDate() string {
 	date := dc.StartTime
 	zone, _ := date.Zone()
 	return fmt.Sprintf("%v %v, %v %v:%v %v", date.Month(), date.Day(), date.Year(), date.Hour(), date.Minute(), zone)
 }
 
-func (dc DmojContest) get_url() string {
+func (dc DmojContest) GetUrl() string {
 	return fmt.Sprintf("https://dmoj.ca/contest/%v", dc.Key)
 }
 
-func (dc DmojContest) get_seconds() int {
+func (dc DmojContest) GetSeconds() int {
 	return int(time.Until(dc.StartTime).Seconds())
 }
 
-func (dc DmojContest) is_active() bool {
+func (dc DmojContest) IsActive() bool {
 	return dc.EndTime.After(time.Now())
 }
 
-func (dc DmojContest) get_judge_name() string {
+func (dc DmojContest) GetJudgeName() string {
 	return "Dmoj"
 }
 
-func dmoj_to_contests(dc []DmojContest) []Contest {
+func DmojToContests(dc []DmojContest) []Contest {
 	var res []Contest
 	for _, c := range dc {
 		res = append(res, c)

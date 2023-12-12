@@ -32,33 +32,33 @@ func (c CodeforcesContest) Print() {
 	fmt.Printf("RelativeTimeSecond: %v\n", c.RelativeTimeSeconds)
 }
 
-func (cc CodeforcesContest) get_name() string {
+func (cc CodeforcesContest) GetName() string {
 	return cc.Name
 }
 
-func (cc CodeforcesContest) get_date() string {
+func (cc CodeforcesContest) GetDate() string {
 	date := time.Now().Add(time.Duration(-1*cc.RelativeTimeSeconds) * time.Second)
 	zone, _ := date.Zone()
 	return fmt.Sprintf("%v %v, %v %v:%v %v", date.Month(), date.Day(), date.Year(), date.Hour(), date.Minute(), zone)
 }
 
-func (cc CodeforcesContest) get_url() string {
+func (cc CodeforcesContest) GetUrl() string {
 	return fmt.Sprintf("https://codeforces.com/contests/%v", cc.Id)
 }
 
-func (cc CodeforcesContest) get_seconds() int {
+func (cc CodeforcesContest) GetSeconds() int {
 	return cc.RelativeTimeSeconds
 }
 
-func (cc CodeforcesContest) is_active() bool {
+func (cc CodeforcesContest) IsActive() bool {
 	return cc.Phase == "BEFORE"
 }
 
-func (cc CodeforcesContest) get_judge_name() string {
+func (cc CodeforcesContest) GetJudgeName() string {
 	return "Codeforces"
 }
 
-func to_contests(cc []CodeforcesContest) []Contest {
+func ToContests(cc []CodeforcesContest) []Contest {
 	var res []Contest
 	for _, c := range cc {
 		res = append(res, c)

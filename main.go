@@ -6,6 +6,7 @@ import (
 	"html/template"
 	"log"
 	"net/http"
+	"reflect"
 	"sort"
 	"time"
 
@@ -72,28 +73,42 @@ func main() {
 			return a / b
 		},
 		"getName": func(c Contest) string {
-			return c.get_name()
+			return c.GetName()
 		},
 		"getDate": func(c Contest) string {
-			return c.get_date()
+			return c.GetDate()
 		},
 		"getUrl": func(c Contest) string {
-			return c.get_url()
+			return c.GetUrl()
 		},
 	}
 	h1 := func(w http.ResponseWriter, r *http.Request) {
 		var contests []Contest
-		contests = append(contests, filter(to_contests(GetCodeforces().Result), Filter{func(c Contest) bool { return c.is_active() }})...)
-		contests = append(contests, filter(dmoj_to_contests(GetDmoj().Data.Objects), Filter{func(c Contest) bool { return c.is_active() }})...)
+		contests = append(contests, filter(ToContests(GetCodeforces().Result), FilterIsUpcoming, nil)...)
+		contests = append(contests, filter(DmojToContests(GetDmoj().Data.Objects), FilterIsUpcoming, nil)...)
 		if r.Method == "POST" {
 			r.ParseForm()
-			ans := r.Form["sorted_by"]
-			if ans[0] == "by_date" {
-				sort.Sort(ByDate(contests))
-			} else if ans[0] == "by_judge" {
-				sort.Sort(ByJudge(contests))
+			s := r.Form["sorted_by"]
+			if len(s) > 0 {
+				if s[0] == "by_date" {
+					sort.Sort(ByDate(contests))
+				} else if s[0] == "by_judge" {
+					sort.Sort(ByJudge(contests))
+				}
+				fmt.Println(s[0])
 			}
-			fmt.Println(ans[0])
+			fmt.Println(reflect.TypeOf(r.Form["Codeforces"]))
+			var judges []string
+			codeforces := r.Form["Codeforces"]
+			dmoj := r.Form["Dmoj"]
+			if len(codeforces) > 0 && codeforces[0] == "off" {
+				judges = append(judges, "Codeforces")
+			}
+			if len(dmoj) > 0 && dmoj[0] == "off" {
+				judges = append(judges, "Dmoj")
+			}
+			contests = filter(contests, FilterForJudge, judges)
+
 		}
 		tmpl, _ := template.New("index.html").Funcs(funcMap).ParseFiles("index.html")
 		tmpl.Execute(w, contests)

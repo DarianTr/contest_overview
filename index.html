@@ -26,13 +26,16 @@
         </div>
         <div class = "col-4">
             <h1 class="mb-4">Misc</h1>
-            <legend>Sorting</legend>
             <form method="post">
+                <legend>Options</legend>
                 <select class="form-select" aria-label="Default select example" name="sorted_by">
                     <option value="none" selected disabled hidden>Select an Option</option> 
                     <option value="by_date">By Date</option>
                     <option value="by_judge">By Judging Website</option>
                 </select>
+                <legend>Exclude Judges</legend>
+                <input type="checkbox" name="Codeforces"/> <label for="Codeforces">Codeforces</label>
+                <input type="checkbox" name="Dmoj"/> <label for="Dmoj">Dmoj</label>
                 <br></br>
                 <input class="btn btn-primary" type="Submit" value="Send"/>
             </form>
