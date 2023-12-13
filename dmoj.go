@@ -1,7 +1,9 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
+	"net/http"
 	"time"
 )
 
@@ -73,4 +75,20 @@ func DmojToContests(dc []DmojContest) []Contest {
 		res = append(res, c)
 	}
 	return res
+}
+
+func GetDmoj() DmojResponse {
+	var dmoj DmojResponse
+	url := "https://dmoj.ca/api/v2/contests"
+	req, _ := http.NewRequest("GET", url, nil)
+	req.Header.Set("Authorization", domjAPIToken)
+	res, err := client.Do(req)
+	if err != nil {
+		println(err)
+	} else {
+		defer res.Body.Close()
+		json.NewDecoder(res.Body).Decode(&dmoj)
+		fmt.Println("res: ", dmoj.ApiVersion)
+	}
+	return dmoj
 }

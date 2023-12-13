@@ -65,3 +65,14 @@ func ToContests(cc []CodeforcesContest) []Contest {
 	}
 	return res
 }
+
+func GetCodeforces() CodeforcesResponse {
+	url := "https://codeforces.com/api/contest.list?gym=false"
+	var codeforces CodeforcesResponse
+
+	err := GetJson(url, &codeforces)
+	if err != nil {
+		fmt.Printf("error: %s", err.Error())
+	}
+	return codeforces
+}

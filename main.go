@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
 	"time"
@@ -12,33 +11,6 @@ import (
 
 var client *http.Client
 var domjAPIToken string
-
-func GetDmoj() DmojResponse {
-	var dmoj DmojResponse
-	url := "https://dmoj.ca/api/v2/contests"
-	req, _ := http.NewRequest("GET", url, nil)
-	req.Header.Set("Authorization", domjAPIToken)
-	res, err := client.Do(req)
-	if err != nil {
-		println(err)
-	} else {
-		defer res.Body.Close()
-		json.NewDecoder(res.Body).Decode(&dmoj)
-		fmt.Println("res: ", dmoj.ApiVersion)
-	}
-	return dmoj
-}
-
-func GetCodeforces() CodeforcesResponse {
-	url := "https://codeforces.com/api/contest.list?gym=false"
-	var codeforces CodeforcesResponse
-
-	err := GetJson(url, &codeforces)
-	if err != nil {
-		fmt.Printf("error: %s", err.Error())
-	}
-	return codeforces
-}
 
 func GetJson(url string, target interface{}) error {
 	resp, err := client.Get(url)
@@ -55,11 +27,9 @@ func SetDomjAPIToken() {
 
 }
 
-type Data struct {
-	Data []Contest
-}
-
 func main() {
+	GetAtCoder()
+	var _ Contest = AtCoderContest{}
 	var _ Contest = DmojContest{}
 	var _ Contest = CodeforcesContest{}
 	SetDomjAPIToken()
