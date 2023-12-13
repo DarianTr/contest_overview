@@ -12,6 +12,11 @@ import (
 var client *http.Client
 var domjAPIToken string
 
+type Data struct {
+	Contest []Contest
+	Judges  []string
+}
+
 func GetJson(url string, target interface{}) error {
 	resp, err := client.Get(url)
 	if err != nil {
@@ -28,7 +33,7 @@ func SetDomjAPIToken() {
 }
 
 func main() {
-	GetAtCoder()
+	SetJudges()
 	var _ Contest = AtCoderContest{}
 	var _ Contest = DmojContest{}
 	var _ Contest = CodeforcesContest{}

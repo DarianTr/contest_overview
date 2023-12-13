@@ -8,6 +8,14 @@ func abs(a int) int {
 	}
 }
 
+var JUDGES []string
+
+func SetJudges() {
+	JUDGES = append(JUDGES, "Codeforces")
+	JUDGES = append(JUDGES, "Dmoj")
+	JUDGES = append(JUDGES, "AtCoder")
+}
+
 type Contest interface {
 	GetName() string
 	GetDate() string

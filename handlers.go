@@ -11,6 +11,7 @@ var h1 = func(w http.ResponseWriter, r *http.Request) {
 	var contests []Contest
 	contests = append(contests, filter(ToContests(GetCodeforces().Result), FilterIsUpcoming, nil)...)
 	contests = append(contests, filter(DmojToContests(GetDmoj().Data.Objects), FilterIsUpcoming, nil)...)
+	contests = append(contests, GetAtCoder()...)
 	// if r.Method == "POST" {
 	// 	r.ParseForm()
 	// 	s := r.Form["sorted_by"]
@@ -38,7 +39,10 @@ var h1 = func(w http.ResponseWriter, r *http.Request) {
 
 	// }
 	tmpl, _ := template.New("index.html").Funcs(funcMap).ParseFiles("index.html")
-	tmpl.Execute(w, contests)
+	tmpl.Execute(w, Data{
+		Contest: contests,
+		Judges:  JUDGES,
+	})
 }
 
 var h2 = func(w http.ResponseWriter, r *http.Request) {
@@ -55,14 +59,15 @@ var h3 = func(w http.ResponseWriter, r *http.Request) {
 	var judges []string
 	contests = append(contests, filter(ToContests(GetCodeforces().Result), FilterIsUpcoming, nil)...)
 	contests = append(contests, filter(DmojToContests(GetDmoj().Data.Objects), FilterIsUpcoming, nil)...)
+	contests = append(contests, GetAtCoder()...)
 
-	if r.URL.Query().Get("Codeforces") == "on" {
-		judges = append(judges, "Codeforces")
+	for _, j := range JUDGES {
+		if r.URL.Query().Get(j) == "on" {
+			judges = append(judges, j)
+		}
 	}
 
-	if r.URL.Query().Get("Dmoj") == "on" {
-		judges = append(judges, "Dmoj")
-	}
+	contests = filter(contests, FilterForJudge, judges)
 	switch r.URL.Query().Get("sorted_by") {
 	case "by_date":
 		sort.Sort(ByDate(contests))
@@ -71,10 +76,11 @@ var h3 = func(w http.ResponseWriter, r *http.Request) {
 	default:
 
 	}
-	fmt.Println("js: ", judges)
-	contests = filter(contests, FilterForJudge, judges)
 	tmpl, _ := template.New("table.html").Funcs(funcMap).ParseFiles("table.html")
-	tmpl.Execute(w, contests)
+	tmpl.Execute(w, Data{
+		Contest: contests,
+		Judges:  JUDGES,
+	})
 }
 
 var funcMap = template.FuncMap{

@@ -14,7 +14,7 @@
             <h1 class="mb-4">Codeforces Contests</h1>
 
             <ul class="list-group fs-5 me-5" id="contest_table">
-                {{ range . }}
+                {{ range .Contest }}
                     <li class="list-group-item bg-primary text-white">
                         <a href="{{getUrl . }}" class="link-light link-offset-2 link-underline-opacity-25 link-underline-opacity-75-hover">
                             {{ getName . }} 
@@ -40,17 +40,16 @@
                     <option value="by_judge">By Judging Website</option>
                 </select>
                 <legend>Exclude Judges</legend>
-                <input type="checkbox" name="Codeforces"
-                /> <label for="Codeforces">Codeforces</label>
-                <input type="checkbox" name="Dmoj"
-                /> <label for="Dmoj">Dmoj</label>
+                {{ range .Judges}}
+                <input type="checkbox" name="{{ . }}"
+                /> <label for="{{ . }}">{{ . }}</label>
+                {{ end }}
                 <br></br>
                 <button class="btn btn-primary" type="Submit" value="Send">
                     <span class="spinner-border spinner-border-sm htmx-indicator" id="spinner" role="status" aria-hidden="true"></span>
                     Submit
                 </button>
             </form>
-            <img id="spinner" class="htmx-indicator" src="/img/bars.svg"/>
         </div>
     </div>
 </body>
