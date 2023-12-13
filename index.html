@@ -31,6 +31,7 @@
             hx-get="/options"
             hx-trigger="submit"
             hx-target="#contest_table"
+            hx-indicator="#spinner"
             >
                 <legend>Options</legend>
                 <select class="form-select" aria-label="Default select example" name="sorted_by">
@@ -44,8 +45,12 @@
                 <input type="checkbox" name="Dmoj"
                 /> <label for="Dmoj">Dmoj</label>
                 <br></br>
-                <input class="btn btn-primary" type="Submit" value="Send"/>
+                <button class="btn btn-primary" type="Submit" value="Send">
+                    <span class="spinner-border spinner-border-sm htmx-indicator" id="spinner" role="status" aria-hidden="true"></span>
+                    Submit
+                </button>
             </form>
+            <img id="spinner" class="htmx-indicator" src="/img/bars.svg"/>
         </div>
     </div>
 </body>
