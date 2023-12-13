@@ -88,7 +88,6 @@ func GetDmoj() DmojResponse {
 	} else {
 		defer res.Body.Close()
 		json.NewDecoder(res.Body).Decode(&dmoj)
-		fmt.Println("res: ", dmoj.ApiVersion)
 	}
 	return dmoj
 }

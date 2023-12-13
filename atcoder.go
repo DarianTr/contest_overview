@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"sync"
 	"time"
 
 	"github.com/gocolly/colly"
@@ -51,9 +50,9 @@ var c = colly.NewCollector()
 func GetAtCoder() []Contest {
 	var res []Contest
 	const url = "https://atcoder.jp/contests"
-	var wg sync.WaitGroup
+	// var wg sync.WaitGroup
 
-	wg.Add(1)
+	// wg.Add(1)
 
 	c.OnResponse(func(r *colly.Response) {
 		fmt.Println("Status:", r.StatusCode)
@@ -61,15 +60,16 @@ func GetAtCoder() []Contest {
 
 	c.OnError(func(r *colly.Response, err error) {
 		fmt.Println("Request URL:", r.Request.URL, "failed with response:", r, "\nError:", err)
-		wg.Done()
+		//wg.Done()
 	})
 
 	c.OnHTML("#contest-table-upcoming table tbody", func(e *colly.HTMLElement) {
+		fmt.Println("hey")
 		e.ForEach("tr", func(_ int, row *colly.HTMLElement) {
 			startTime := row.ChildText("td:nth-child(1)")
 			contestName := row.ChildText("td:nth-child(2) a")
 			duration := row.ChildText("td:nth-child(3)")
-			//ratedRange := row.ChildText("td:nth-child(4)")
+			ratedRange := row.ChildText("td:nth-child(4)")
 			contestURL := row.ChildAttr("td:nth-child(2) a", "href")
 			time, _ := time.Parse("2006-01-02 15:04:05-0700", startTime)
 			contest := AtCoderContest{
@@ -78,18 +78,18 @@ func GetAtCoder() []Contest {
 				StartTime: time,
 				Url:       contestURL,
 			}
-
+			fmt.Println(ratedRange)
 			res = append(res, contest)
 		})
-		defer func() {
-			// Decrement the WaitGroup counter when the scraping is complete
-			wg.Done()
-		}()
+		// defer func() {
+		// 	// Decrement the WaitGroup counter when the scraping is complete
+		// 	wg.Done()
+		// }()
 	})
 	fmt.Println("started")
 	c.Visit(url)
 	fmt.Println("done", res)
-	wg.Wait()
+	//wg.Wait()
 	fmt.Println("ended")
 	return res
 }
