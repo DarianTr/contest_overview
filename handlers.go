@@ -8,10 +8,7 @@ import (
 )
 
 var h1 = func(w http.ResponseWriter, r *http.Request) {
-	var contests []Contest
-	contests = append(contests, filter(ToContests(GetCodeforces().Result), FilterIsUpcoming, nil)...)
-	contests = append(contests, filter(DmojToContests(GetDmoj().Data.Objects), FilterIsUpcoming, nil)...)
-	contests = append(contests, GetAtCoder()...)
+	contests := CONTESTS
 	tmpl, _ := template.New("index.html").Funcs(funcMap).ParseFiles("index.html")
 	tmpl.Execute(w, Data{
 		Contest: contests,
@@ -26,15 +23,8 @@ var h2 = func(w http.ResponseWriter, r *http.Request) {
 }
 
 var h3 = func(w http.ResponseWriter, r *http.Request) {
-
-	fmt.Println(r.URL)
-
-	var contests []Contest
+	contests := CONTESTS
 	var judges []string
-	contests = append(contests, filter(ToContests(GetCodeforces().Result), FilterIsUpcoming, nil)...)
-	contests = append(contests, filter(DmojToContests(GetDmoj().Data.Objects), FilterIsUpcoming, nil)...)
-	contests = append(contests, GetAtCoder()...)
-
 	for _, j := range JUDGES {
 		if r.URL.Query().Get(j) == "on" {
 			judges = append(judges, j)

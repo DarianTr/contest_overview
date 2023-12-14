@@ -12,6 +12,8 @@ import (
 var client *http.Client
 var domjAPIToken string
 
+var CONTESTS []Contest
+
 type Data struct {
 	Contest []Contest
 	Judges  []string
@@ -29,7 +31,6 @@ func GetJson(url string, target interface{}) error {
 func SetDomjAPIToken() {
 	envFile, _ := godotenv.Read(".env")
 	domjAPIToken = envFile["DMOJ_API_TOKEN"]
-
 }
 
 func main() {
@@ -39,6 +40,10 @@ func main() {
 	var _ Contest = CodeforcesContest{}
 	SetDomjAPIToken()
 	client = &http.Client{Timeout: 10 * time.Second}
+
+	CONTESTS = append(CONTESTS, filter(ToContests(GetCodeforces().Result), FilterIsUpcoming, nil)...)
+	CONTESTS = append(CONTESTS, filter(DmojToContests(GetDmoj().Data.Objects), FilterIsUpcoming, nil)...)
+	CONTESTS = append(CONTESTS, GetAtCoder()...)
 
 	http.HandleFunc("/", h1)
 	http.HandleFunc("/search", h2)
