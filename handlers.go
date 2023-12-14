@@ -8,6 +8,9 @@ import (
 )
 
 var h1 = func(w http.ResponseWriter, r *http.Request) {
+	if UpdateNeeded() {
+		UpdateContests()
+	}
 	contests := CONTESTS
 	tmpl, _ := template.New("index.html").Funcs(funcMap).ParseFiles("index.html")
 	tmpl.Execute(w, Data{
@@ -23,6 +26,9 @@ var h2 = func(w http.ResponseWriter, r *http.Request) {
 }
 
 var h3 = func(w http.ResponseWriter, r *http.Request) {
+	if UpdateNeeded() {
+		UpdateContests()
+	}
 	contests := CONTESTS
 	var judges []string
 	for _, j := range JUDGES {

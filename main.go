@@ -12,7 +12,9 @@ import (
 var client *http.Client
 var domjAPIToken string
 
+var JUDGES []string
 var CONTESTS []Contest
+var LAST_UPDATED time.Time
 
 type Data struct {
 	Contest []Contest
@@ -34,16 +36,11 @@ func SetDomjAPIToken() {
 }
 
 func main() {
-	SetJudges()
-	var _ Contest = AtCoderContest{}
-	var _ Contest = DmojContest{}
-	var _ Contest = CodeforcesContest{}
-	SetDomjAPIToken()
 	client = &http.Client{Timeout: 10 * time.Second}
 
-	CONTESTS = append(CONTESTS, filter(ToContests(GetCodeforces().Result), FilterIsUpcoming, nil)...)
-	CONTESTS = append(CONTESTS, filter(DmojToContests(GetDmoj().Data.Objects), FilterIsUpcoming, nil)...)
-	CONTESTS = append(CONTESTS, GetAtCoder()...)
+	SetJudges()
+	SetDomjAPIToken()
+	UpdateContests()
 
 	http.HandleFunc("/", h1)
 	http.HandleFunc("/search", h2)

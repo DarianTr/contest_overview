@@ -1,5 +1,7 @@
 package main
 
+import "time"
+
 func abs(a int) int {
 	if a < 0 {
 		return -a
@@ -8,12 +10,21 @@ func abs(a int) int {
 	}
 }
 
-var JUDGES []string
-
 func SetJudges() {
 	JUDGES = append(JUDGES, "Codeforces")
 	JUDGES = append(JUDGES, "Dmoj")
 	JUDGES = append(JUDGES, "AtCoder")
+}
+
+func UpdateNeeded() bool {
+	return time.Since(LAST_UPDATED).Hours() > 2
+}
+
+func UpdateContests() {
+	CONTESTS = append(CONTESTS, filter(ToContests(GetCodeforces().Result), FilterIsUpcoming, nil)...)
+	CONTESTS = append(CONTESTS, filter(DmojToContests(GetDmoj().Data.Objects), FilterIsUpcoming, nil)...)
+	CONTESTS = append(CONTESTS, GetAtCoder()...)
+	LAST_UPDATED = time.Now()
 }
 
 type Contest interface {
