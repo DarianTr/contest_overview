@@ -45,22 +45,16 @@ func (a AtCoderContest) GetJudgeName() string {
 	return "AtCoder"
 }
 
-var c = colly.NewCollector()
-
 func GetAtCoder() []Contest {
+	var c = colly.NewCollector()
 	var res []Contest
 	const url = "https://atcoder.jp/contests"
-	// var wg sync.WaitGroup
-
-	// wg.Add(1)
-
 	c.OnResponse(func(r *colly.Response) {
 		fmt.Println("Status:", r.StatusCode)
 	})
 
 	c.OnError(func(r *colly.Response, err error) {
 		fmt.Println("Request URL:", r.Request.URL, "failed with response:", r, "\nError:", err)
-		//wg.Done()
 	})
 
 	c.OnHTML("#contest-table-upcoming table tbody", func(e *colly.HTMLElement) {
@@ -81,15 +75,10 @@ func GetAtCoder() []Contest {
 			fmt.Println(ratedRange)
 			res = append(res, contest)
 		})
-		// defer func() {
-		// 	// Decrement the WaitGroup counter when the scraping is complete
-		// 	wg.Done()
-		// }()
 	})
 	fmt.Println("started")
 	c.Visit(url)
 	fmt.Println("done", res)
-	//wg.Wait()
 	fmt.Println("ended")
 	return res
 }

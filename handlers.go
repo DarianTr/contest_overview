@@ -12,32 +12,6 @@ var h1 = func(w http.ResponseWriter, r *http.Request) {
 	contests = append(contests, filter(ToContests(GetCodeforces().Result), FilterIsUpcoming, nil)...)
 	contests = append(contests, filter(DmojToContests(GetDmoj().Data.Objects), FilterIsUpcoming, nil)...)
 	contests = append(contests, GetAtCoder()...)
-	// if r.Method == "POST" {
-	// 	r.ParseForm()
-	// 	s := r.Form["sorted_by"]
-	// 	if len(s) > 0 {
-	// 		if s[0] == "by_date" {
-	// 			sort.Sort(ByDate(contests))
-	// 		} else if s[0] == "by_judge" {
-	// 			sort.Sort(ByJudge(contests))
-	// 		}
-	// 		fmt.Println(s[0])
-	// 	}
-	// 	fmt.Println(reflect.TypeOf(r.Form["Codeforces"]))
-	// 	var judges []string
-	// 	codeforces := r.Form["Codeforces"]
-	// 	dmoj := r.Form["Dmoj"]
-	// 	if len(codeforces) > 0 && codeforces[0] == "on" {
-	// 		judges = append(judges, "Codeforces")
-	// 		fmt.Println("dmoj", judges)
-	// 	}
-	// 	if len(dmoj) > 0 && dmoj[0] == "on" {
-	// 		judges = append(judges, "Dmoj")
-	// 		fmt.Println("dmoj", judges)
-	// 	}
-	// 	contests = filter(contests, FilterForJudge, judges)
-
-	// }
 	tmpl, _ := template.New("index.html").Funcs(funcMap).ParseFiles("index.html")
 	tmpl.Execute(w, Data{
 		Contest: contests,
