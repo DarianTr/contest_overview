@@ -2,18 +2,19 @@ package main
 
 import "time"
 
-func abs(a int) int {
-	if a < 0 {
-		return -a
-	} else {
-		return a
-	}
-}
+// func abs(a int) int {
+// 	if a < 0 {
+// 		return -a
+// 	} else {
+// 		return a
+// 	}
+// }
 
 func SetJudges() {
 	JUDGES = append(JUDGES, "Codeforces")
 	JUDGES = append(JUDGES, "Dmoj")
 	JUDGES = append(JUDGES, "AtCoder")
+	JUDGES = append(JUDGES, "Usaco")
 }
 
 func UpdateNeeded() bool {
@@ -23,6 +24,8 @@ func UpdateNeeded() bool {
 func UpdateContests() {
 	CONTESTS = append(CONTESTS, filter(ToContests(GetCodeforces().Result), FilterIsUpcoming, nil)...)
 	CONTESTS = append(CONTESTS, filter(DmojToContests(GetDmoj().Data.Objects), FilterIsUpcoming, nil)...)
+	//CONTESTS = append(CONTESTS, filter(GetUsaco(), FilterIsUpcoming, nil)...)
+	CONTESTS = append(CONTESTS, GetUsaco()...)
 	CONTESTS = append(CONTESTS, GetAtCoder()...)
 	LAST_UPDATED = time.Now()
 }
@@ -43,7 +46,7 @@ func (a ByDate) Len() int {
 }
 
 func (a ByDate) Less(i, j int) bool {
-	return -1*a[i].GetSeconds() > -1*abs(a[j].GetSeconds())
+	return a[i].GetSeconds() < a[j].GetSeconds()
 }
 
 func (a ByDate) Swap(i, j int) {

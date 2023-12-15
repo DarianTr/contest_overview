@@ -47,7 +47,7 @@ func (cc CodeforcesContest) GetUrl() string {
 }
 
 func (cc CodeforcesContest) GetSeconds() int {
-	return cc.RelativeTimeSeconds
+	return -1 * cc.RelativeTimeSeconds
 }
 
 func (cc CodeforcesContest) IsActive() bool {

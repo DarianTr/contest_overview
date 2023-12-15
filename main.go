@@ -37,7 +37,6 @@ func SetDomjAPIToken() {
 
 func main() {
 	client = &http.Client{Timeout: 10 * time.Second}
-	GetUsaco()
 	SetJudges()
 	SetDomjAPIToken()
 	UpdateContests()
