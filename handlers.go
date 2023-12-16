@@ -1,6 +1,7 @@
 package main
 
 import (
+	"contest_overview/calendar"
 	"fmt"
 	"net/http"
 	"sort"
@@ -51,6 +52,33 @@ var h3 = func(w http.ResponseWriter, r *http.Request) {
 		Contest: contests,
 		Judges:  JUDGES,
 	})
+}
+
+var example = []calendar.Date{
+	{Number: 1, IsToday: false},
+	{Number: 2, IsToday: false},
+	{Number: 3, IsToday: false},
+	{Number: 4, IsToday: false},
+	{Number: 5, IsToday: false},
+	{Number: 6, IsToday: false},
+	{Number: 7, IsToday: false},
+	{Number: 8, IsToday: true},
+	{Number: 9, IsToday: false},
+	{Number: 10, IsToday: false},
+}
+
+var weeks = []calendar.Week{
+	{Days: example[0:5]},
+	{Days: example[5:10]},
+}
+
+var displayCalendar = func(w http.ResponseWriter, r *http.Request) {
+	tmpl, err := template.New("calendar.html").ParseFiles("./calendar/calendar.html")
+	if err != nil {
+		fmt.Println(err)
+	} else {
+		tmpl.Execute(w, weeks)
+	}
 }
 
 var funcMap = template.FuncMap{

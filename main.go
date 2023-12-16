@@ -37,13 +37,15 @@ func SetDomjAPIToken() {
 
 func main() {
 	client = &http.Client{Timeout: 10 * time.Second}
-	SetJudges()
-	SetDomjAPIToken()
-	UpdateContests()
+	// SetJudges()
+	// SetDomjAPIToken()
+	// UpdateContests()
 
-	http.HandleFunc("/", h1)
-	http.HandleFunc("/search", h2)
-	http.HandleFunc("/options", h3)
+	// http.HandleFunc("/", h1)
+	// http.HandleFunc("/search", h2)
+	// http.HandleFunc("/options", h3)
+	http.HandleFunc("/calendar", displayCalendar)
+	http.HandleFunc("/c", displayCalendar)
 
-	log.Fatal(http.ListenAndServe(":8000", nil))
+	log.Fatal(http.ListenAndServe(":8080", nil))
 }
