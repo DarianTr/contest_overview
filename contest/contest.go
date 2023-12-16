@@ -1,14 +1,15 @@
-package main
+package contest
 
-import "time"
+import (
+	"net/http"
+	"time"
+)
 
-// func abs(a int) int {
-// 	if a < 0 {
-// 		return -a
-// 	} else {
-// 		return a
-// 	}
-// }
+var domjAPIToken string
+var client = &http.Client{Timeout: 10 * time.Second}
+var JUDGES []string
+var CONTESTS []Contest
+var LAST_UPDATED time.Time
 
 func SetJudges() {
 	JUDGES = append(JUDGES, "Codeforces")
@@ -22,8 +23,8 @@ func UpdateNeeded() bool {
 }
 
 func UpdateContests() {
-	CONTESTS = append(CONTESTS, filter(ToContests(GetCodeforces().Result), FilterIsUpcoming, nil)...)
-	CONTESTS = append(CONTESTS, filter(DmojToContests(GetDmoj().Data.Objects), FilterIsUpcoming, nil)...)
+	CONTESTS = append(CONTESTS, FilterContest(ToContests(GetCodeforces().Result), FilterIsUpcoming, nil)...)
+	CONTESTS = append(CONTESTS, FilterContest(DmojToContests(GetDmoj().Data.Objects), FilterIsUpcoming, nil)...)
 	//CONTESTS = append(CONTESTS, filter(GetUsaco(), FilterIsUpcoming, nil)...)
 	CONTESTS = append(CONTESTS, GetUsaco()...)
 	CONTESTS = append(CONTESTS, GetAtCoder()...)
@@ -83,7 +84,7 @@ var FilterForJudge = Filter{
 	},
 }
 
-func filter(contests []Contest, filter Filter, judges []string) []Contest {
+func FilterContest(contests []Contest, filter Filter, judges []string) []Contest {
 	var filtered []Contest
 	for _, c := range contests {
 		if filter.condition(c, judges) {

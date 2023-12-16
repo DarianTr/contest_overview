@@ -1,6 +1,7 @@
-package main
+package contest
 
 import (
+	"encoding/json"
 	"fmt"
 	"time"
 )
@@ -64,6 +65,15 @@ func ToContests(cc []CodeforcesContest) []Contest {
 		res = append(res, c)
 	}
 	return res
+}
+
+func GetJson(url string, target interface{}) error {
+	resp, err := client.Get(url)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+	return json.NewDecoder(resp.Body).Decode(target)
 }
 
 func GetCodeforces() CodeforcesResponse {

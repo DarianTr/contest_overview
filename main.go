@@ -1,42 +1,20 @@
 package main
 
 import (
-	"encoding/json"
+	"contest_overview/contest"
 	"log"
 	"net/http"
-	"time"
-
-	"github.com/joho/godotenv"
 )
 
 var client *http.Client
 var domjAPIToken string
 
-var JUDGES []string
-var CONTESTS []Contest
-var LAST_UPDATED time.Time
-
 type Data struct {
-	Contest []Contest
+	Contest []contest.Contest
 	Judges  []string
 }
 
-func GetJson(url string, target interface{}) error {
-	resp, err := client.Get(url)
-	if err != nil {
-		return err
-	}
-	defer resp.Body.Close()
-	return json.NewDecoder(resp.Body).Decode(target)
-}
-
-func SetDomjAPIToken() {
-	envFile, _ := godotenv.Read(".env")
-	domjAPIToken = envFile["DMOJ_API_TOKEN"]
-}
-
 func main() {
-	client = &http.Client{Timeout: 10 * time.Second}
 	// SetJudges()
 	// SetDomjAPIToken()
 	// UpdateContests()

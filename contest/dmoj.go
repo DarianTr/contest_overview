@@ -1,10 +1,12 @@
-package main
+package contest
 
 import (
 	"encoding/json"
 	"fmt"
 	"net/http"
 	"time"
+
+	"github.com/joho/godotenv"
 )
 
 type DmojResponse struct {
@@ -90,4 +92,9 @@ func GetDmoj() DmojResponse {
 		json.NewDecoder(res.Body).Decode(&dmoj)
 	}
 	return dmoj
+}
+
+func SetDomjAPIToken() {
+	envFile, _ := godotenv.Read(".env")
+	domjAPIToken = envFile["DMOJ_API_TOKEN"]
 }

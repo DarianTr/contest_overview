@@ -2,6 +2,7 @@ package main
 
 import (
 	"contest_overview/calendar"
+	"contest_overview/contest"
 	"fmt"
 	"net/http"
 	"sort"
@@ -9,14 +10,14 @@ import (
 )
 
 var h1 = func(w http.ResponseWriter, r *http.Request) {
-	if UpdateNeeded() {
-		UpdateContests()
+	if contest.UpdateNeeded() {
+		contest.UpdateContests()
 	}
-	contests := CONTESTS
+	contests := contest.CONTESTS
 	tmpl, _ := template.New("index.html").Funcs(funcMap).ParseFiles("index.html")
 	tmpl.Execute(w, Data{
 		Contest: contests,
-		Judges:  JUDGES,
+		Judges:  contest.JUDGES,
 	})
 }
 
@@ -27,49 +28,48 @@ var h2 = func(w http.ResponseWriter, r *http.Request) {
 }
 
 var h3 = func(w http.ResponseWriter, r *http.Request) {
-	if UpdateNeeded() {
-		UpdateContests()
+	if contest.UpdateNeeded() {
+		contest.UpdateContests()
 	}
-	contests := CONTESTS
+	contests := contest.CONTESTS
 	var judges []string
-	for _, j := range JUDGES {
+	for _, j := range contest.JUDGES {
 		if r.URL.Query().Get(j) == "on" {
 			judges = append(judges, j)
 		}
 	}
-
-	contests = filter(contests, FilterForJudge, judges)
+	contests = contest.FilterContest(contests, contest.FilterForJudge, judges)
 	switch r.URL.Query().Get("sorted_by") {
 	case "by_date":
-		sort.Sort(ByDate(contests))
+		sort.Sort(contest.ByDate(contests))
 	case "by_judge":
-		sort.Sort(ByJudge(contests))
+		sort.Sort(contest.ByJudge(contests))
 	default:
 
 	}
 	tmpl, _ := template.New("table.html").Funcs(funcMap).ParseFiles("table.html")
 	tmpl.Execute(w, Data{
 		Contest: contests,
-		Judges:  JUDGES,
+		Judges:  contest.JUDGES,
 	})
 }
 
 var example = []calendar.Date{
-	{Number: 1, IsToday: false},
-	{Number: 2, IsToday: false},
-	{Number: 3, IsToday: false},
-	{Number: 4, IsToday: false},
-	{Number: 5, IsToday: false},
-	{Number: 6, IsToday: false},
-	{Number: 7, IsToday: false},
-	{Number: 8, IsToday: true},
-	{Number: 9, IsToday: false},
-	{Number: 10, IsToday: false},
+	{Number: 100000000000, IsToday: false},
+	{Number: 200000000000, IsToday: false},
+	{Number: 300000000000, IsToday: false},
+	{Number: 400000000000, IsToday: false},
+	{Number: 500000000000, IsToday: false},
+	{Number: 600000000000, IsToday: false},
+	{Number: 700000000000, IsToday: false},
+	{Number: 800000000000, IsToday: true},
+	{Number: 900000000000, IsToday: false},
+	{Number: 1000000000000, IsToday: false},
 }
 
 var weeks = []calendar.Week{
-	{Days: example[0:5]},
-	{Days: example[5:10]},
+	{Days: example[0:7]},
+	{Days: example[7:10]},
 }
 
 var displayCalendar = func(w http.ResponseWriter, r *http.Request) {
@@ -85,13 +85,13 @@ var funcMap = template.FuncMap{
 	"Div": func(a int, b int) int {
 		return a / b
 	},
-	"getName": func(c Contest) string {
+	"getName": func(c contest.Contest) string {
 		return c.GetName()
 	},
-	"getDate": func(c Contest) string {
+	"getDate": func(c contest.Contest) string {
 		return c.GetDate()
 	},
-	"getUrl": func(c Contest) string {
+	"getUrl": func(c contest.Contest) string {
 		return c.GetUrl()
 	},
 }
