@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"sort"
 	"text/template"
+	"time"
 )
 
 var h1 = func(w http.ResponseWriter, r *http.Request) {
@@ -54,30 +55,13 @@ var h3 = func(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
-var example = []calendar.Date{
-	{Number: 100000000000, IsToday: false},
-	{Number: 200000000000, IsToday: false},
-	{Number: 300000000000, IsToday: false},
-	{Number: 400000000000, IsToday: false},
-	{Number: 500000000000, IsToday: false},
-	{Number: 600000000000, IsToday: false},
-	{Number: 700000000000, IsToday: false},
-	{Number: 800000000000, IsToday: true},
-	{Number: 900000000000, IsToday: false},
-	{Number: 1000000000000, IsToday: false},
-}
-
-var weeks = []calendar.Week{
-	{Days: example[0:7]},
-	{Days: example[7:10]},
-}
-
 var displayCalendar = func(w http.ResponseWriter, r *http.Request) {
-	tmpl, err := template.New("calendar.html").ParseFiles("./calendar/calendar.html")
+	data := calendar.DisplayCalendar(calendar.ContestsToCalendar(contest.CONTESTS), 2023, time.Now().Month())
+	tmpl, err := template.New("calendar.html").Funcs(funcMap).ParseFiles("./calendar/calendar.html")
 	if err != nil {
 		fmt.Println(err)
 	} else {
-		tmpl.Execute(w, weeks)
+		tmpl.Execute(w, data)
 	}
 }
 
@@ -93,5 +77,8 @@ var funcMap = template.FuncMap{
 	},
 	"getUrl": func(c contest.Contest) string {
 		return c.GetUrl()
+	},
+	"isSunday": func(a int) bool {
+		return a%7 == 0
 	},
 }

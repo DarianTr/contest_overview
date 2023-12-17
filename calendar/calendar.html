@@ -30,7 +30,7 @@
         <th><h4 align="center" style="color: #0074d9;">&#10094;</h4></th>
         <th></th>
         <th><h2 align="center" style="color: #0074d9;"> 
-            December 2023 
+            {{ .MonthName }}  {{ .Year }}
         </h2> </th>
         <th></th>
         <th><h4 align="center" style="color: #0074d9;">&#10095;</h4></th>
@@ -61,20 +61,21 @@
         </thead> 
   
         <tbody> 
-          {{ range . }}
-            <tr> 
-                {{ range .Days }}
-                  {{ if .IsToday}} 
-                    <td><span class="active">{{ .Number }}</span></td>
-                  {{ else }}
-                    <td> {{ .Number }} </td>
+          {{ range .MonthContent.Weeks }}
+          <tr>
+            {{ range .Days }}
+            <td> 
+                <h2>{{ .Date }}</h2>
+                <ul>
+                    {{ range .Contests }}
+                        <li><a href="{{ getUrl . }}">{{ getName . }}</a></li>
                     {{ end }}
-                {{ end }}
-            </tr> 
-          {{ end }}
+                </ul>
+            </td>
+            {{ end }}
+        </tr> 
+        {{ end }}
         </tbody> 
     </table> 
 </body> 
 </html> 
-
-<!-- https://www.geeksforgeeks.org/design-a-calendar-using-html-and-css/ -->

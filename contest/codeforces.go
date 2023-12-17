@@ -40,7 +40,20 @@ func (cc CodeforcesContest) GetName() string {
 func (cc CodeforcesContest) GetDate() string {
 	date := time.Now().Add(time.Duration(-1*cc.RelativeTimeSeconds) * time.Second)
 	zone, _ := date.Zone()
-	return fmt.Sprintf("%v %v, %v %v:%v %v", date.Month(), date.Day(), date.Year(), date.Hour(), date.Minute(), zone)
+	var minute string
+	var hour string
+	if date.Minute() < 10 {
+		minute = fmt.Sprintf("0%v", date.Minute())
+	} else {
+		minute = fmt.Sprintf("%v", date.Minute())
+	}
+	if date.Hour() < 10 {
+		hour = fmt.Sprintf("0%v", date.Hour())
+	} else {
+		hour = fmt.Sprintf("%v", date.Hour())
+	}
+	return fmt.Sprintf("%v %v, %v %v:%v %v", date.Month(), date.Day(), date.Year(), hour, minute, zone)
+
 }
 
 func (cc CodeforcesContest) GetUrl() string {

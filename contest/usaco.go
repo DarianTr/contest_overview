@@ -19,12 +19,18 @@ func (uc UsacoContest) GetDate() string {
 	date := uc.StartTime
 	zone, _ := date.Zone()
 	var minute string
+	var hour string
 	if date.Minute() < 10 {
 		minute = fmt.Sprintf("0%v", date.Minute())
 	} else {
 		minute = fmt.Sprintf("%v", date.Minute())
 	}
-	return fmt.Sprintf("%v %v, %v %v:%v %v", date.Month(), date.Day(), date.Year(), date.Hour(), minute, zone)
+	if date.Hour() < 10 {
+		hour = fmt.Sprintf("0%v", date.Hour())
+	} else {
+		hour = fmt.Sprintf("%v", date.Hour())
+	}
+	return fmt.Sprintf("%v %v, %v %v:%v %v", date.Month(), date.Day(), date.Year(), hour, minute, zone)
 }
 
 func (uc UsacoContest) GetName() string {
