@@ -19,6 +19,7 @@ func main() {
 	http.HandleFunc("/", h1)
 	http.HandleFunc("/search", h2)
 	http.HandleFunc("/options", h3)
+  http.HandleFunc("/view", view)
 	http.HandleFunc("/calendar", displayCalendar)
 	http.HandleFunc("/c", displayCalendar)
 

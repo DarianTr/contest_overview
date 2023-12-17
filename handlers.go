@@ -55,6 +55,10 @@ var h3 = func(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
+var view = func(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("htmx resp: ", r.URL.Query().Get("switch"))
+}
+
 var displayCalendar = func(w http.ResponseWriter, r *http.Request) {
 	data := calendar.DisplayCalendar(calendar.ContestsToCalendar(contest.CONTESTS), 2023, time.Now().Month())
 	tmpl, err := template.New("calendar.html").Funcs(funcMap).ParseFiles("./calendar/calendar.html")
