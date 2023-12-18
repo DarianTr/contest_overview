@@ -51,11 +51,11 @@
                 </button>
             </form>
         </br>
-        <div id="test" class="form-check form-switch" hx-get="/view" hx-include="[id='test']" hx-trigger="click" hx-target="#contest_table">
-          <input class="form-check-input" type="checkbox" role="checkbox" id="switch"></input>
-          <label class="form-check-label" for="switch"> View as calendar </label>
+        <div class="form-check form-switch"
+        hx-get="/view" hx-trigger="load, change" hx-target="#contest_table" hx-include="this">
+            <input class="form-check-input" type="checkbox" id="switch" name="switch" value="test"/>
+            <label class="form-check-label" for="id"> View as calendar </label>
         </div>
-      </div>
     </div>
   </body>
 </html>

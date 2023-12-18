@@ -56,7 +56,11 @@ var h3 = func(w http.ResponseWriter, r *http.Request) {
 }
 
 var view = func(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("htmx resp: ", r.URL.Query().Get("switch"))
+	if r.URL.Query().Get("switch") != "" {
+		displayCalendar(w, r)
+	} else {
+		h3(w, r)
+	}
 }
 
 var displayCalendar = func(w http.ResponseWriter, r *http.Request) {
